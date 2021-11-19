@@ -3,6 +3,9 @@ package com.example.result
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -10,28 +13,45 @@ private const val LAST_SELECTED_ITEM = "item"
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var bottomMenu: BottomNavigationView
+    private lateinit var bottomHome: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        bottomMenu = findViewById(R.id.bottom_menu)
+        bottomHome = findViewById(R.id.bottom_menu)
 
-        bottomMenu.setOnItemSelectedListener { item ->
+        val fioList: List<FIO> = listOf(
+            FIO("Иванов", "Б.Ю."),
+            FIO("Орел", "Г.Ш." ),
+            FIO("Алшкевич", "У.Н.")
+
+        )
+        bottomHome.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.menu -> {
-                    val menuFragment = MenuFragment()
-                    replaceFragment(menuFragment)
+                R.id.home -> {
+                    val homeFragment = HomeFragment()
+                    replaceFragment(homeFragment)
                 }
-                R.id.about -> {
-                    val aboutFragment = AboutFragment()
-                    replaceFragment(aboutFragment)
-                }
-            }
+                R.id.info -> {
+                    val infoFragment = InfoFragment()
+                                        val fioRecyclerView : RecyclerView = findViewById(R.id.fio_recycler_view)
+                    fioRecyclerView.layoutManager=
+                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+                  //  replaceFragment(infoFragment)}
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_container,infoFragment)
+                        .commit()
+                    fioRecyclerView.adapter=FIOAdapter(fioList)
+            }}
             true
         }
 
-        bottomMenu.selectedItemId = savedInstanceState?.getInt(LAST_SELECTED_ITEM) ?: R.id.menu
+
+
+
+        bottomHome.selectedItemId = savedInstanceState?.getInt(LAST_SELECTED_ITEM) ?: R.id.home
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -42,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(LAST_SELECTED_ITEM, bottomMenu.selectedItemId)
+        outState.putInt(LAST_SELECTED_ITEM, bottomHome.selectedItemId)
         super.onSaveInstanceState(outState)
     }
 }
